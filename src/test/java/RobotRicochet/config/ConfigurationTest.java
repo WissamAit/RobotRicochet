@@ -11,8 +11,7 @@ public class ConfigurationTest {
 
     @Test
     public void shouldReturnValuesAppPropFiles() throws IOException {
-        Configuration configuration = new Configuration();
-        Properties values = configuration.getValues();
+        Properties values = Configuration.fetchProperties();
 
         values.entrySet().forEach(System.out::println);
         String property = values.getProperty("file.plateau1");

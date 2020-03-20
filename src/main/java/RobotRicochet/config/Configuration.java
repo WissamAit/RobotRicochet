@@ -7,11 +7,11 @@ import java.util.Properties;
 
 public class Configuration {
 
-    public Properties getValues() throws IOException {
+    public static Properties fetchProperties() throws IOException {
 
         Properties prop = new Properties();
         String fileName = "application.properties";
-        InputStream inputStream = getClass().getClassLoader().getResourceAsStream(fileName);
+        InputStream inputStream = Configuration.class.getClassLoader().getResourceAsStream(fileName);
 
         if (inputStream != null) {
             prop.load(inputStream);
