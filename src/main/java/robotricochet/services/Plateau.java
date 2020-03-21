@@ -1,14 +1,14 @@
-package RobotRicochet.services;
+package robotricochet.services;
 
-import RobotRicochet.entity.*;
+import robotricochet.config.PropertiesSingleton;
+import robotricochet.entity.*;
+import robotricochet.utils.PlateauUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Random;
+import java.util.*;
 
 /**
  * Plateau
@@ -16,8 +16,12 @@ import java.util.Random;
 public class Plateau {
 
 	private static final boolean debug = true; // debug value to test program
+	public static final String FILE_PLATEAU_1 = "file.plateau1";
+	public static final String FILE_PLATEAU_2 = "file.plateau2";
+	public static final String FILE_PLATEAU_3 = "file.plateau3";
+	public static final String FILE_PLATEAU_4 = "file.plateau4";
 
-
+	private Properties propertiesConfig = PropertiesSingleton.getInstance();
 
 	public Case[][] plateau;
 	public Robot redRobot;
@@ -105,110 +109,18 @@ public class Plateau {
 
 	private Case[][] readFileSubPlateau(String fileName) throws IOException {
 		Case[][] subPlateau = new Case[9][9];
+
 		InputStream inputStream = Plateau.class.getResourceAsStream("/"+fileName);
 		InputStreamReader inputStreamReader = new InputStreamReader(inputStream); // reads the file with the subPlateau
 		BufferedReader bufferReader = new BufferedReader(inputStreamReader);
+
 		String line = null;
 		int i = 0; // i is the line in tableau
 		while ((line = bufferReader.readLine()) != null) { // until it reaches the end of the file
 			String[] charactersInLine = line.split("(?!^)"); // charactersInLine contains the characters of each line by
 																// line
 			for (int j = 0; j < charactersInLine.length; j++) {
-				switch (charactersInLine[j]) { // put the correct Type to each Case of the plateau
-				case "#":
-					subPlateau[i][j] = new Case(Type.OBSTACLE);
-					break;
-				case " ":
-					subPlateau[i][j] = new Case(Type.EMPTYSPACE);
-					break;
-				case "r":
-					subPlateau[i][j] = new Case(Type.RED_ROBOT_START);
-					break;
-				case "g":
-					subPlateau[i][j] = new Case(Type.GREEN_ROBOT_START);
-					break;
-				case "b":
-					subPlateau[i][j] = new Case(Type.BLUE_ROBOT_START);
-					break;
-				case "y":
-					subPlateau[i][j] = new Case(Type.YELLOW_ROBOT_START);
-					break;
-				case "0":
-					subPlateau[i][j] = new Case(Type.RED_CIRCLE);
-					break;
-				case "1":
-					subPlateau[i][j] = new Case(Type.GREEN_CIRCLE);
-					break;
-				case "2":
-					subPlateau[i][j] = new Case(Type.BLUE_CIRCLE);
-					break;
-				case "3":
-					subPlateau[i][j] = new Case(Type.YELLOW_CIRCLE);
-					break;
-				case "4":
-					subPlateau[i][j] = new Case(Type.RED_SQUARE);
-					break;
-				case "5":
-					subPlateau[i][j] = new Case(Type.GREEN_SQUARE);
-					break;
-				case "6":
-					subPlateau[i][j] = new Case(Type.BLUE_SQUARE);
-					break;
-				case "7":
-					subPlateau[i][j] = new Case(Type.YELLOW_SQUARE);
-					break;
-				case "8":
-					subPlateau[i][j] = new Case(Type.RED_TRIANGLE);
-					break;
-				case "9":
-					subPlateau[i][j] = new Case(Type.GREEN_TRIANGLE);
-					break;
-				case "A":
-					subPlateau[i][j] = new Case(Type.BLUE_TRIANGLE);
-					break;
-				case "B":
-					subPlateau[i][j] = new Case(Type.YELLOW_TRIANGLE);
-					break;
-				case "C":
-					subPlateau[i][j] = new Case(Type.RED_DIAMOND);
-					break;
-				case "D":
-					subPlateau[i][j] = new Case(Type.GREEN_DIAMOND);
-					break;
-				case "E":
-					subPlateau[i][j] = new Case(Type.BLUE_DIAMOND);
-					break;
-				case "F":
-					subPlateau[i][j] = new Case(Type.YELLOW_DIAMOND);
-					break;
-				case "G":
-					subPlateau[i][j] = new Case(Type.MULTICOLOR_VORTEX);
-					break;
-				case "H":
-					subPlateau[i][j] = new Case(Type.ANTISLASH_RED);
-					break;
-				case "I":
-					subPlateau[i][j] = new Case(Type.SLASH_RED);
-					break;
-				case "J":
-					subPlateau[i][j] = new Case(Type.ANTISLASH_GREEN);
-					break;
-				case "K":
-					subPlateau[i][j] = new Case(Type.SLASH_GREEN);
-					break;
-				case "L":
-					subPlateau[i][j] = new Case(Type.ANTISLASH_BLUE);
-					break;
-				case "M":
-					subPlateau[i][j] = new Case(Type.SLASH_BLUE);
-					break;
-				case "N":
-					subPlateau[i][j] = new Case(Type.ANTISLASH_YELLOW);
-					break;
-				case "O":
-					subPlateau[i][j] = new Case(Type.SLASH_YELLOW);
-					break;
-				}
+				PlateauUtil.parsePlaneCharacters(subPlateau, i, charactersInLine, j);
 			}
 			i++; // the file reader switch to the next line, so we increase i to change row in
 					// plateau
@@ -222,8 +134,11 @@ public class Plateau {
 
 		Random rand = new Random();
 		int randomNumber;
-		ArrayList<String> subPlateauFiles = new ArrayList<String>(
-				Arrays.asList("subPlateau1.txt", "subPlateau2.txt", "subPlateau3.txt", "subPlateau4.txt")); // list of
+		ArrayList<String> subPlateauFiles = new ArrayList<>(Arrays.asList(
+						propertiesConfig.getProperty(FILE_PLATEAU_1),
+						propertiesConfig.getProperty(FILE_PLATEAU_2),
+						propertiesConfig.getProperty(FILE_PLATEAU_3),
+						propertiesConfig.getProperty(FILE_PLATEAU_4))); // list of
 																											// subPlateau
 																											// files
 		randomNumber = rand.nextInt(subPlateauFiles.size());
@@ -279,7 +194,6 @@ public class Plateau {
 				case "N":
 					subPlateauTopRight[i][j]=new Case(Type.SLASH_YELLOW);
 					break;
-
 				}
 
 				subPlateauBottomLeft[i][j] = subPlateauBottomLeftTemp[8 - i][j];    // rotate the bottom left subPlateau by

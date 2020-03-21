@@ -1,6 +1,6 @@
-package RobotRicochet.tests;
+package robotricochet.tests;
 
-import RobotRicochet.services.PathFinder;
+import robotricochet.services.PathFinder;
 
 import java.io.IOException;
 

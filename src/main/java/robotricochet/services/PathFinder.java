@@ -1,8 +1,8 @@
-package RobotRicochet.services;
+package robotricochet.services;
 
-import RobotRicochet.entity.Position;
-import RobotRicochet.entity.Robot;
-import RobotRicochet.entity.Type;
+import robotricochet.entity.Position;
+import robotricochet.entity.Robot;
+import robotricochet.entity.Type;
 
 import java.io.IOException;
 import java.util.*;

@@ -1,7 +1,4 @@
-package RobotRicochet.entity;
-
-import RobotRicochet.entity.Color;
-import RobotRicochet.entity.Position;
+package robotricochet.entity;
 
 /**
  * Robot

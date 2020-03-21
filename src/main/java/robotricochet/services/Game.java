@@ -1,10 +1,10 @@
-package RobotRicochet.services;
+package robotricochet.services;
 
-import RobotRicochet.entity.Direction;
-import RobotRicochet.entity.Position;
-import RobotRicochet.entity.Robot;
-import RobotRicochet.entity.Type;
-import RobotRicochet.entity.Color;
+import robotricochet.entity.Direction;
+import robotricochet.entity.Position;
+import robotricochet.entity.Robot;
+import robotricochet.entity.Type;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Random;
@@ -110,20 +110,20 @@ public class Game {
 
 
 
-	public RobotRicochet.entity.Color randomColor(){
+	public robotricochet.entity.Color randomColor(){
 		Random choiceColor=new Random();
 		int choosenColor=choiceColor.nextInt(3);
 		if(choosenColor==0){
-			return RobotRicochet.entity.Color.RED;
+			return robotricochet.entity.Color.RED;
 		}
 		if(choosenColor==1) {
-			return RobotRicochet.entity.Color.BLUE;
+			return robotricochet.entity.Color.BLUE;
 		}
 		if(choosenColor==2) {
-			return RobotRicochet.entity.Color.YELLOW;
+			return robotricochet.entity.Color.YELLOW;
 		}
 		if(choosenColor==3) {
-			return RobotRicochet.entity.Color.GREEN;
+			return robotricochet.entity.Color.GREEN;
 		}
 		return null;
 	}
@@ -131,16 +131,16 @@ public class Game {
 	public Robot currentRobot(Type token) {// return the robot which has to play according to the color of the token
 
 		if (this.redTokens.contains(token)) {
-			return this.plateau.getRobot(RobotRicochet.entity.Color.RED);
+			return this.plateau.getRobot(robotricochet.entity.Color.RED);
 		}
 		if (this.greenTokens.contains(token)) {
-			return this.plateau.getRobot(RobotRicochet.entity.Color.GREEN);
+			return this.plateau.getRobot(robotricochet.entity.Color.GREEN);
 		}
 		if (this.blueTokens.contains(token)) {
-			return this.plateau.getRobot(RobotRicochet.entity.Color.BLUE);
+			return this.plateau.getRobot(robotricochet.entity.Color.BLUE);
 		}
 		if (this.yellowTokens.contains(token)) {
-			return this.plateau.getRobot(RobotRicochet.entity.Color.YELLOW);
+			return this.plateau.getRobot(robotricochet.entity.Color.YELLOW);
 		}
 		if(token==Type.MULTICOLOR_VORTEX){
 			return this.plateau.getRobot(this.randomColor());
@@ -151,7 +151,7 @@ public class Game {
 
 
 	public boolean isObstacleTest(Position position) {
-		if (this.getPlateau().getRobot(RobotRicochet.entity.Color.BLUE).getPosition().isTheSameAs(position) || this.getPlateau().getRobot(RobotRicochet.entity.Color.GREEN).getPosition().isTheSameAs(position) || this.getPlateau().getRobot(RobotRicochet.entity.Color.RED).getPosition().isTheSameAs(position) || this.getPlateau().getRobot(RobotRicochet.entity.Color.YELLOW).getPosition().isTheSameAs(position)) {
+		if (this.getPlateau().getRobot(robotricochet.entity.Color.BLUE).getPosition().isTheSameAs(position) || this.getPlateau().getRobot(robotricochet.entity.Color.GREEN).getPosition().isTheSameAs(position) || this.getPlateau().getRobot(robotricochet.entity.Color.RED).getPosition().isTheSameAs(position) || this.getPlateau().getRobot(robotricochet.entity.Color.YELLOW).getPosition().isTheSameAs(position)) {
 			return true;
 		}
 		if (this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.OBSTACLE) {
@@ -160,17 +160,17 @@ public class Game {
 		return false;
 	}
 
-	public boolean isRicochetForRobot(RobotRicochet.entity.Color color, Position position) {
-		if (color == RobotRicochet.entity.Color.BLUE && (this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.SLASH_BLUE || this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.ANTISLASH_BLUE)) {
+	public boolean isRicochetForRobot(robotricochet.entity.Color color, Position position) {
+		if (color == robotricochet.entity.Color.BLUE && (this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.SLASH_BLUE || this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.ANTISLASH_BLUE)) {
 			return true;
 		}
-		else if (color == RobotRicochet.entity.Color.GREEN && (this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.SLASH_GREEN || this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.ANTISLASH_GREEN)) {
+		else if (color == robotricochet.entity.Color.GREEN && (this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.SLASH_GREEN || this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.ANTISLASH_GREEN)) {
 			return true;
 		}
-		else if (color == RobotRicochet.entity.Color.RED && (this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.SLASH_RED || this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.ANTISLASH_RED)) {
+		else if (color == robotricochet.entity.Color.RED && (this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.SLASH_RED || this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.ANTISLASH_RED)) {
 			return true;
 		}
-		else if (color == RobotRicochet.entity.Color.YELLOW && (this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.SLASH_YELLOW || this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.ANTISLASH_YELLOW)) {
+		else if (color == robotricochet.entity.Color.YELLOW && (this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.SLASH_YELLOW || this.plateau.getPlateau()[position.getX()][position.getY()].getType()==Type.ANTISLASH_YELLOW)) {
 			return true;
 		}
 		return false;
@@ -186,7 +186,7 @@ public class Game {
 		return false;
 	}
 
-	public Position getPositionWhenMovedInDirection(Position position, Direction direction, RobotRicochet.entity.Color color) { //return the position of a robot placed on position position if we were to move it in the direction
+	public Position getPositionWhenMovedInDirection(Position position, Direction direction, robotricochet.entity.Color color) { //return the position of a robot placed on position position if we were to move it in the direction
 		Position ghostRobotPosition = new Position(position.getX(), position.getY()); //clone of the robot position before he moves
 		if (direction == Direction.UP) {
 			ghostRobotPosition.setX(ghostRobotPosition.getX()-1); //the ghost position is one case above the real robot

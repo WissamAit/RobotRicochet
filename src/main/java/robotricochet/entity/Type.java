@@ -1,4 +1,4 @@
-package RobotRicochet.entity;
+package robotricochet.entity;
 
 public enum Type {
     OBSTACLE, //#

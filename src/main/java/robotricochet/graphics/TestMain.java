@@ -1,6 +1,6 @@
-package RobotRicochet.graphics;
+package robotricochet.graphics;
 
-import RobotRicochet.services.Game;
+import robotricochet.services.Game;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;

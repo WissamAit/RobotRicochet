@@ -1,8 +1,7 @@
-package RobotRicochet.config;
+package robotricochet.config;
 
 import org.junit.Test;
 
-import java.io.IOException;
 import java.util.Properties;
 
 public class ConfigurationTest {
@@ -10,7 +9,7 @@ public class ConfigurationTest {
 
 
     @Test
-    public void shouldReturnValuesAppPropFiles() throws IOException {
+    public void shouldReturnValuesAppPropFiles() {
         Properties values = Configuration.fetchProperties();
 
         values.entrySet().forEach(System.out::println);
