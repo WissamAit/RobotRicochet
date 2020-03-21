@@ -55,4 +55,68 @@ public class PlateauUtil {
         casesMap.put("O", new Case(Type.SLASH_YELLOW));
         return casesMap;
     }
+
+    public static void subPlateauRotation(Case[][] subPlateauTopRight, Case[][] subPlateauBottomLeftTemp, Case[][] subPlateauBottomLeft, int x, int y) {
+        switch (subPlateauTopRight[x][y].toString()) {
+
+            case "I":
+                subPlateauTopRight[x][y] = new Case(Type.ANTISLASH_RED);
+                break;
+            case "M":
+                subPlateauTopRight[x][y] = new Case(Type.ANTISLASH_BLUE);
+                break;
+            case "K":
+                subPlateauTopRight[x][y] = new Case(Type.ANTISLASH_GREEN);
+                break;
+            case "O":
+                subPlateauTopRight[x][y] = new Case(Type.ANTISLASH_YELLOW);
+                break;
+
+            case "H":
+                subPlateauTopRight[x][y] = new Case(Type.SLASH_RED);
+                break;
+            case "L":
+                subPlateauTopRight[x][y] = new Case(Type.SLASH_BLUE);
+                break;
+            case "J":
+                subPlateauTopRight[x][y] = new Case(Type.SLASH_GREEN);
+                break;
+            case "N":
+                subPlateauTopRight[x][y] = new Case(Type.SLASH_YELLOW);
+                break;
+        }
+
+        subPlateauBottomLeft[x][y] = subPlateauBottomLeftTemp[8 - x][y];    // rotate the bottom left subPlateau by
+        // 90° to the left
+        //the switch is used for switching the slash by
+        //an anti-slash only with the rotation of 90°
+        switch (subPlateauBottomLeft[x][y].toString()) {
+
+            case "I":
+                subPlateauBottomLeft[x][y] = new Case(Type.ANTISLASH_RED);
+                break;
+            case "M":
+                subPlateauBottomLeft[x][y] = new Case(Type.ANTISLASH_BLUE);
+                break;
+            case "K":
+                subPlateauBottomLeft[x][y] = new Case(Type.ANTISLASH_GREEN);
+                break;
+            case "O":
+                subPlateauBottomLeft[x][y] = new Case(Type.ANTISLASH_YELLOW);
+                break;
+
+            case "H":
+                subPlateauBottomLeft[x][y] = new Case(Type.SLASH_RED);
+                break;
+            case "L":
+                subPlateauBottomLeft[x][y] = new Case(Type.SLASH_BLUE);
+                break;
+            case "J":
+                subPlateauBottomLeft[x][y] = new Case(Type.SLASH_GREEN);
+                break;
+            case "N":
+                subPlateauBottomLeft[x][y] = new Case(Type.SLASH_YELLOW);
+                break;
+        }
+    }
 }

@@ -5,8 +5,7 @@ package robotricochet.entity;
  */
 public class Position {
 
-    private static final boolean debug = true; // debug value to test program
-    
+
     private int x;
     private int y;
 
@@ -30,13 +29,13 @@ public class Position {
     public void setY(int y) {
         this.y = y;
     }
-    
+
     public String toString() {
-    	return "("+this.getX()+","+this.getY()+")";
+        return "(" + this.getX() + "," + this.getY() + ")";
     }
 
     public boolean isTheSameAs(Position position) {
-        return (this.getX()==position.getX() && this.getY()==position.getY());
+        return (this.getX() == position.getX() && this.getY() == position.getY());
     }
 
     @Override
@@ -44,12 +43,12 @@ public class Position {
         if (this == o) return true;
         if (!(o instanceof Position)) return false;
         Position position = (Position) o;
-        return x== position.x &&
-               y== position.y;
+        return x == position.x &&
+                y == position.y;
     }
 
     @Override
     public int hashCode() {
-        return x*1000000000+y;
+        return x * 1000000000 + y;
     }
 }

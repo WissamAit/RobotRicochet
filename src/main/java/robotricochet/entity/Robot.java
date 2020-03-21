@@ -5,7 +5,6 @@ package robotricochet.entity;
  */
 public class Robot {
 
-    private static final boolean debug = true; // debug value to test program
 
     private Color color;
     private Position position;

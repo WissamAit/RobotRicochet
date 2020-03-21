@@ -22,10 +22,11 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 import java.io.*;
+import java.security.NoSuchAlgorithmException;
 
 public class TestMain extends Application {
 
-	private static final boolean debug = true; // debug value to test program
+
 
 
 	public static void main(String[] args) {
@@ -34,7 +35,7 @@ public class TestMain extends Application {
 	}
 
 	@Override
-	public void start(Stage primaryStage) throws FileNotFoundException, IOException, IllegalArgumentException {
+	public void start(Stage primaryStage) throws  NullPointerException{
 
 		//plateauView.
 
@@ -44,13 +45,13 @@ public class TestMain extends Application {
 		Scene scene = new Scene(root, 900, 660);
 
 
-		//Game game = new Game();
-		//game.initGame();
-		//game.play();
-
-
-		ImageView backGroundImage = new ImageView(
-				new Image(new FileInputStream("src/main/resources/images/ricochet-robots-board.jpg")));
+		ImageView backGroundImage = null;
+		try {
+			backGroundImage = new ImageView(
+					new Image(new FileInputStream("src/main/resources/images/ricochet-robots-board.jpg")));
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 		backGroundImage.setFitHeight(1400);
 		backGroundImage.setFitWidth(900);
 		backGroundImage.setPreserveRatio(true);
@@ -137,7 +138,7 @@ public class TestMain extends Application {
 
 		GridPane grid=new GridPane(); grid.add(backGroundImage,0,0);
 		grid.add(gameTitle, 0, 0, 2, 1); grid.add(playButton, 1, 1);
-		//grid.add(introductionButton, 1, 1); grid.add(exitButton, 1, 1);
+
 		grid.setHgap(25); grid.setVgap(20);
 
 		playButton.setOnAction(new EventHandler<ActionEvent>() {
@@ -146,7 +147,7 @@ public class TestMain extends Application {
 				// TODO : play game
 				try {
 					showDialog();
-				} catch (IOException e) {
+				} catch (IOException | NoSuchAlgorithmException e) {
 					e.printStackTrace();
 				}
 			}
@@ -187,7 +188,7 @@ public class TestMain extends Application {
 
 
 
-		private void showDialog() throws IOException{
+		private void showDialog() throws IOException, NoSuchAlgorithmException {
 		Stage primaryStage=new Stage();
 		primaryStage.setResizable(false);
 		primaryStage.setTitle("Ricochet robot solver");
@@ -198,17 +199,15 @@ public class TestMain extends Application {
 		ImageView imageview = null;
 		gridPane.setHgap(2);
 		gridPane.setVgap(2);
-		for (int i = 0; i < game.plateau.plateau.length; i++) {
-			for (int j = 0; j < game.plateau.plateau.length; j++) {
-				switch (game.plateau.plateau[i][j].getType()) {
+		for (int i = 0; i < game.getPlateau().getPlateau().length; i++) {
+			for (int j = 0; j < game.getPlateau().getPlateau().length; j++) {
+				switch (game.getPlateau().getPlateau()[i][j].getType()) {
 					case OBSTACLE:
 						image = new Image(new FileInputStream("src/main/resources/images/OBSTACLE.jpg"));
 						imageview = new ImageView(image);
                         imageview.setFitHeight(33);
                         imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
 						break;
 
 					case EMPTYSPACE:
@@ -217,8 +216,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 					case RED_ROBOT_START:
@@ -227,8 +225,6 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
 						break;
 
 
@@ -238,8 +234,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 
@@ -249,8 +244,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 
@@ -260,8 +254,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 
 						break;
 
@@ -272,8 +265,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 
@@ -283,8 +275,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 					case GREEN_CIRCLE:
@@ -293,8 +284,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 
@@ -304,8 +294,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 					case BLUE_SQUARE:
@@ -314,8 +303,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 
@@ -325,8 +313,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 
@@ -336,8 +323,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 
@@ -347,8 +333,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 
@@ -358,8 +343,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 
@@ -369,8 +353,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 
@@ -380,8 +363,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 					case RED_TRIANGLE:
@@ -390,8 +372,8 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
+
 						break;
 
 					case RED_DIAMOND:
@@ -400,8 +382,8 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
+
 						break;
 
 
@@ -411,8 +393,8 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
+
 						break;
 
 					case GREEN_DIAMOND:
@@ -421,8 +403,8 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
+
 						break;
 
 					case BLUE_DIAMOND:
@@ -431,8 +413,8 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
+
 						break;
 
 					case SLASH_BLUE:
@@ -441,8 +423,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 					case SLASH_GREEN:
@@ -451,8 +432,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 
@@ -462,8 +442,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 					case SLASH_YELLOW:
@@ -472,8 +451,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 					case ANTISLASH_BLUE:
@@ -482,8 +460,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 					case ANTISLASH_GREEN:
@@ -492,8 +469,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 
@@ -503,8 +479,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 					case MULTICOLOR_VORTEX:
@@ -513,8 +488,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(33);
 						imageview.setFitWidth(33);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 					case ANTISLASH_RED:
 						image = new Image(new FileInputStream("src/main/resources/images/REDANTISLASH.jpg"));
@@ -522,8 +496,7 @@ public class TestMain extends Application {
 						imageview.setFitHeight(34);
 						imageview.setFitWidth(34);
 						gridPane.add(imageview, j, i);
-						image = null;
-						imageview = null;
+
 						break;
 
 					default:

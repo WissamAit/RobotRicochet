@@ -18,7 +18,7 @@ public class Configuration {
         if (inputStream != null) {
             try {
                 prop.load(inputStream);
-                LOGGER.info("Loading properties from : "+fileName);
+                LOGGER.info("Loading properties from : " + fileName);
             } catch (IOException e) {
                 LOGGER.severe(e.getMessage());
             }
