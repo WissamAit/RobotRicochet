@@ -1,6 +1,6 @@
 package robotricochet.main;
 
-import robotricochet.services.Game;
+import robotricochet.services.GameBuilder;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
@@ -15,14 +15,11 @@ public class Main {
 
 
         System.out.println("----------------PLAY:-----------------");
-        Game game =new Game();
-        game.play();
+
+        GameBuilder gameBuilder = new GameBuilder();
+        gameBuilder.play();
 
 
-      /* GameBuilder gameb= new GameBuilder();
-       System.out.println(gameb.getPlateau().getRobotOnPlateau(Color.YELLOW).getPosition());
-        Robot robot = new Robot(Color.YELLOW,gameb.getPlateau().getRobotOnPlateau(Color.YELLOW).getPosition());
-        System.out.println(gameb.getPossibleMoves(robot));*/
     }
 
 }

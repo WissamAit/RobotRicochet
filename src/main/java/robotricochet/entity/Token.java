@@ -46,13 +46,13 @@ public class Token {
         return blueTokens;
     }
 
-    public static CaseType drawToken() {
+    public static CaseType getTokenCaseType() {
         List<CaseType> tokens = new ArrayList<>();
         tokens.addAll(blueTokensList());
         tokens.addAll(redTokensList());
         tokens.addAll(greenTokensList());
         tokens.addAll(yellowTokensList());
-       Random rand = new Random();
+        Random rand = new Random();
         if (!tokens.isEmpty()) {
             int randomNumber = rand.nextInt(tokens.size());
             CaseType drawnToken = tokens.get(randomNumber);

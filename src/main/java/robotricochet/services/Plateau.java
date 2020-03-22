@@ -24,59 +24,26 @@ public class Plateau {
     public static final String FILE_PLATEAU_4 = "file.plateau4";
     private Properties propertiesConfig = PropertiesSingleton.getInstance();
     private Case[][] grid;
-    private Robot redRobot;
-    private Robot greenRobot;
-    private Robot blueRobot;
-    private Robot yellowRobot;
 
 
     public Plateau() throws IOException, NoSuchAlgorithmException {
         this.grid = this.constructPlateau();
-        this.redRobot = new Robot(Color.RED, new Position(-1, -1));
-        this.greenRobot = new Robot(Color.GREEN, new Position(-1, -1));
-        this.blueRobot = new Robot(Color.BLUE, new Position(-1, -1));
-        this.yellowRobot = new Robot(Color.YELLOW, new Position(-1, -1));
-        this.placeRobotOnStartingCases();
+    }
+
+
+    public Position searchPositionOf(CaseType caseType) {
+        for (int i = 0; i < grid[0].length; i++) {
+            for (int j = 0; j < grid.length; j++) {
+                if (grid[i][j].getCaseType() == caseType) {
+                    return new Position(i, j);
+                }
+            }
+        }
+        return null;
     }
 
     public Case[][] getPlateau() {
         return grid;
-    }
-
-    public void placeRobotOnStartingCases() {
-        for (int i = 0; i < 18; i++) {
-            for (int j = 0; j < 18; j++) {
-                switch (this.grid[i][j].getCaseType()) {
-                    case GREEN_ROBOT_START:
-                        this.greenRobot.setPosition(i, j);
-                        break;
-                    case BLUE_ROBOT_START:
-                        this.blueRobot.setPosition(i, j);
-                        break;
-                    case YELLOW_ROBOT_START:
-                        this.yellowRobot.setPosition(i, j);
-                        break;
-                    case RED_ROBOT_START:
-                        this.redRobot.setPosition(i, j);
-                        break;
-                    default:
-                        break;
-                }
-            }
-        }
-    }
-
-    public Robot getRobotOnPlateau(Color color) {
-        if (color == Color.RED) {
-            return this.redRobot;
-        } else if (color == Color.GREEN) {
-            return this.greenRobot;
-        } else if (color == Color.BLUE) {
-            return this.blueRobot;
-        } else if (color == Color.YELLOW) {
-            return this.yellowRobot;
-        } else
-            return null;
     }
 
 
@@ -92,12 +59,9 @@ public class Plateau {
     }
 
 
-
     public void printPlateau() {
         printPlateau(this.grid);
     }
-
-
 
 
     private static Case[][] readFileSubPlateau(String fileName) throws IOException {
@@ -120,9 +84,6 @@ public class Plateau {
         inputStreamReader.close();
         return subPlateau;
     }
-
-
-
 
     public Case[][] constructPlateau() throws IOException, NoSuchAlgorithmException {
         Random rand = SecureRandom.getInstanceStrong();
@@ -155,8 +116,6 @@ public class Plateau {
         return concatenateSubPlateau(subPlateauTopLeft, subPlateauTopRight, subPlateauBottomLeft, subPlateauBottomRight);
     }
 
-
-
     private void finalSubPlateauRotated(Case[][] subPlateauTopRight, Case[][] subPlateauBottomLeft, Case[][] subPlateauBottomRight, Case[][] subPlateauTopRightTemp, Case[][] subPlateauBottomLeftTemp, Case[][] subPlateauBottomRightTemp) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -175,9 +134,9 @@ public class Plateau {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 concatenationOfAllSubPlateau[i][j] = subPlateauTopLeft[i][j];
-                concatenationOfAllSubPlateau[i][j+9] = subPlateauTopRight[i][j];
-                concatenationOfAllSubPlateau[i+9][j] = subPlateauBottomLeft[i][j];
-                concatenationOfAllSubPlateau[i+9][j+9] = subPlateauBottomRight[i][j];
+                concatenationOfAllSubPlateau[i][j + 9] = subPlateauTopRight[i][j];
+                concatenationOfAllSubPlateau[i + 9][j] = subPlateauBottomLeft[i][j];
+                concatenationOfAllSubPlateau[i + 9][j + 9] = subPlateauBottomRight[i][j];
             }
         }
 
