@@ -1,26 +1,87 @@
 package robotricochet.services;
 
+import robotricochet.entity.CaseType;
 import robotricochet.entity.Position;
 import robotricochet.entity.Robot;
-import robotricochet.entity.Type;
 
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
-import java.util.logging.Logger;
+
 
 import static java.lang.StrictMath.abs;
 
-public class PathFinder extends Game {
+public class PathFinder {
 
 
-    Logger logger = Logger.getAnonymousLogger();
+    private GameBuilder game;
+    Map<Position, Position> cameFrom = new HashMap<>();
+    Map<Position, Integer> current2startCost = new HashMap<>();//gScore
+    Map<Position, Integer> cheapestCost = new HashMap<>();//fScore
+
 
     public PathFinder() throws IOException, NoSuchAlgorithmException {
-        super();
+        game = new GameBuilder();
+    }
+
+    public GameBuilder getGame() {
+        return game;
+    }
+
+    public List<Position> aStar(Robot robot, CaseType token) {
+
+        final Position startPosition = new Position(robot.getPosition().getX(), robot.getPosition().getY());
+        final Position targetPosition = game.searchPositionOf(token);
+        int tentativeGscore;
+        Comparator<Position> comparator = getPositionComparator(cheapestCost);
+
+        PriorityQueue<Position> openQueuePositions = new PriorityQueue<>(1, comparator);
+        Set<Position> openSetPositions = new HashSet<>();
+
+
+        openQueuePositions.add(startPosition);
+        openSetPositions.add(startPosition);
+
+        current2startCost.put(startPosition, 0);
+        cheapestCost.put(startPosition, countDistance(startPosition, targetPosition));
+
+        while (!openQueuePositions.isEmpty()) {
+            final Position current = openQueuePositions.poll();
+            openSetPositions.remove(current);
+            current2startCost.put(current, countDistance(startPosition, current));
+
+            List<Position> finalSmallestPath = finalPositionIsReached(robot, targetPosition, current);
+            if (!finalSmallestPath.isEmpty()) return finalSmallestPath;
+
+            robot.setPosition(current);
+
+            List<Position> possibleMoves = game.getPossibleMoves(robot);
+            for (Position nextMove : possibleMoves) {
+                tentativeGscore = current2startCost.getOrDefault(current, Integer.MAX_VALUE) + 1;
+                if (tentativeGscore < current2startCost.getOrDefault(nextMove, Integer.MAX_VALUE)) {
+                    cameFrom.put(nextMove, current);
+                    cheapestCost.put(nextMove, tentativeGscore + countDistance(nextMove, targetPosition));
+                    if (!openSetPositions.contains(nextMove)) {
+                        openQueuePositions.add(nextMove);
+                        openSetPositions.add(nextMove);
+                    }
+                }
+            }
+        }
+        return Collections.emptyList();
 
     }
 
+    private List<Position> finalPositionIsReached(Robot robot, Position goal, Position current) {
+        ArrayList<Position> aStarArray;
+        if ((current.getX() == goal.getX()) && (current.getY() == goal.getY())) {
+
+            aStarArray = reconstructPath(cameFrom, current);
+            robot.setPosition(aStarArray.get(aStarArray.size() - 1));
+            return aStarArray;
+        }
+        return Collections.emptyList();
+    }
 
     public int countDistance(Position startPosition, Position nextPosition) {
         int x = nextPosition.getX() - startPosition.getX();
@@ -28,9 +89,18 @@ public class PathFinder extends Game {
         return abs(x) + abs(y);
     }
 
+    private Comparator<Position> getPositionComparator(Map<Position, Integer> cheapestCost) {
+        return (Position p1, Position p2) -> {
+            int cheapestCostPosition1 = cheapestCost.get(p1);
+            int cheapestCostPosition2 = cheapestCost.get(p2);
 
-    // recontruction of the path from the goal
-    public ArrayList<Position> reconstructPath(HashMap<Position, Position> cameFrom, Position current) {
+            return Integer.compare(cheapestCostPosition1, cheapestCostPosition2);
+
+        };
+    }
+
+
+    public ArrayList<Position> reconstructPath(Map<Position, Position> cameFrom, Position current) {
         ArrayList<Position> totalPath = new ArrayList<>();
         totalPath.add(0, current);
         while (cameFrom.containsKey(current)) {
@@ -42,91 +112,5 @@ public class PathFinder extends Game {
 
     }
 
-
-    public ArrayList<Position> aStar(Robot robot, Type token) {
-
-
-        // sauvegarder la position initaile du robot
-        final Position start = new Position(robot.getPosition().getX(), robot.getPosition().getY());
-        final Position goal = this.getPlateau().searchPositionOf(token);
-        int tentativeGscrore;
-        HashMap<Position, Position> cameFrom = new HashMap<>();
-        HashMap<Position, Integer> gScore = new HashMap<>();
-        HashMap<Position, Integer> fScore = new HashMap<>();
-
-        Comparator<Position> comparator =
-                (Position p1, Position p2) -> {
-                    int f1 = fScore.get(p1);
-                    int f2 = fScore.get(p2);
-
-                    if (f1 > f2) {
-                        return 1;
-                    } else {
-                        if (f1 < f2) {
-                            return -1;
-                        } else {
-                            return 0;
-                        }
-                    }
-
-                };
-
-        PriorityQueue<Position> openQueue = new PriorityQueue<>(1, comparator);
-        HashSet<Position> openSet = new HashSet<>();
-        ArrayList<Position> aStartArray;
-
-
-        openQueue.add(start);
-        openSet.add(start);
-
-        gScore.put(start, 0);
-        fScore.put(start, countDistance(start, goal));
-
-        while (!openQueue.isEmpty()) {
-            final Position current = openQueue.poll();
-            openSet.remove(current);
-            gScore.put(current, countDistance(start, current));
-            //returning the arraylist from start to the goal
-            if ((current.getX() == goal.getX()) && (current.getY() == goal.getY())) {
-
-                aStartArray = reconstructPath(cameFrom, current);
-                robot.setPosition(aStartArray.get(aStartArray.size() - 1));
-                return aStartArray;
-            }
-            robot.setPosition(current);
-
-            Position[] moves = getMovesTest(robot);
-            for (Position nextMove : moves) {
-                tentativeGscrore = gScore.getOrDefault(current, Integer.MAX_VALUE) + this.countDistance(current,nextMove);
-                if (tentativeGscrore < gScore.getOrDefault(nextMove, Integer.MAX_VALUE)) {
-                    cameFrom.put(nextMove, current);
-                    fScore.put(nextMove, tentativeGscrore + countDistance(nextMove, goal));
-                    if (!openSet.contains(nextMove)) {
-                        openQueue.add(nextMove);
-                        openSet.add(nextMove);
-                    }
-                }
-            }
-        }
-        return null;
-
-    }
-
-    public void play() throws NoSuchAlgorithmException {
-        logger.info("start of game ");
-        Type currentToken = this.drawToken();// to start the round we draw a token from the arraylistof tokens
-        Robot currentRobot = this.currentRobot(currentToken);
-        logger.info("the current token is : " + currentToken + "* position *" + this.getPlateau().searchPositionOf(currentToken));
-        logger.info("the current robot is  : " + currentRobot.getColor() + " *position * " + currentRobot.getPosition());
-        ArrayList<Position> astarArray = this.aStar(this.currentRobot(currentToken), currentToken);
-        if (astarArray == null) {
-            logger.info("No path for the current robot with the current token !!");
-        } else {
-            logger.info("the path : " + astarArray);
-            logger.info("final position of robot : " + this.currentRobot(currentToken).getPosition());
-        }
-
-        System.out.println("end of game ");
-    }
 
 }

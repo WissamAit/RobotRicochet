@@ -20,9 +20,12 @@ import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import robotricochet.services.GameBuilder;
 
 import java.io.*;
 import java.security.NoSuchAlgorithmException;
+
+import static robotricochet.entity.CaseType.OBSTACLE;
 
 public class TestMain extends Application {
 
@@ -193,7 +196,7 @@ public class TestMain extends Application {
 		primaryStage.setResizable(false);
 		primaryStage.setTitle("Ricochet robot solver");
 		GridPane gridPane = new GridPane();
-		Game game = new Game();
+		GameBuilder game = new GameBuilder();
 		game.initGame();
 		Image image = null;
 		ImageView imageview = null;
@@ -201,7 +204,7 @@ public class TestMain extends Application {
 		gridPane.setVgap(2);
 		for (int i = 0; i < game.getPlateau().getPlateau().length; i++) {
 			for (int j = 0; j < game.getPlateau().getPlateau().length; j++) {
-				switch (game.getPlateau().getPlateau()[i][j].getType()) {
+				switch (game.getPlateau().getPlateau()[i][j].getCaseType()) {
 					case OBSTACLE:
 						image = new Image(new FileInputStream("src/main/resources/images/OBSTACLE.jpg"));
 						imageview = new ImageView(image);

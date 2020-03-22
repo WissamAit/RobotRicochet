@@ -1,6 +1,6 @@
 package robotricochet.entity;
 
-public enum Type {
+public enum CaseType {
     OBSTACLE, //#
     EMPTYSPACE, //' '
     RED_ROBOT_START, //r

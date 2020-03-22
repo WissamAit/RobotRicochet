@@ -7,22 +7,22 @@ package robotricochet.entity;
 public class Case {
 
 
-    Type type;
+    CaseType caseType;
 
 
-    public Case(Type type) {
+    public Case(CaseType caseType) {
 
-        this.type = type;
+        this.caseType = caseType;
     }
 
-    public Type getType() {
+    public CaseType getCaseType() {
 
-        return this.type;
+        return this.caseType;
     }
 
     public String toString() { // gives the correct character depending of the Type of the Case
         String string = null;
-        switch (this.type) {
+        switch (this.caseType) {
             case OBSTACLE:
                 string = "#";
                 break;

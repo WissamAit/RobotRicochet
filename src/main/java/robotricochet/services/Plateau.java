@@ -1,3 +1,4 @@
+
 package robotricochet.services;
 
 import robotricochet.config.PropertiesSingleton;
@@ -42,10 +43,10 @@ public class Plateau {
         return grid;
     }
 
-    public void placeRobotOnStartingCases() { // positionne les robots sur les pastilles
+    public void placeRobotOnStartingCases() {
         for (int i = 0; i < 18; i++) {
             for (int j = 0; j < 18; j++) {
-                switch (this.grid[i][j].getType()) {
+                switch (this.grid[i][j].getCaseType()) {
                     case GREEN_ROBOT_START:
                         this.greenRobot.setPosition(i, j);
                         break;
@@ -65,7 +66,7 @@ public class Plateau {
         }
     }
 
-    public Robot getRobot(Color color) {
+    public Robot getRobotOnPlateau(Color color) {
         if (color == Color.RED) {
             return this.redRobot;
         } else if (color == Color.GREEN) {
@@ -83,113 +84,100 @@ public class Plateau {
         int i = 0;
         while (i < plateau.length) {
             for (int j = 0; j < plateau.length; j++) {
-                System.out.print(plateau[i][j].toString());
+                System.out.print(plateau[i][j]);
             }
-            System.out.println(""); // change line to print the subPlateau as a 2D table
-            i++; // change line to print in the variable subPlateau
+            System.out.println("");
+            i++;
         }
     }
+
+
 
     public void printPlateau() {
         printPlateau(this.grid);
     }
 
-    public Position searchPositionOf(Type type) { // return the position of the first case with Type type, else null
-        for (int i = 0; i < this.grid[0].length; i++) {
-            for (int j = 0; j < this.grid.length; j++) {
-                if (grid[i][j].getType() == type) {
-                    return new Position(i, j);
-                }
-            }
-        }
-        return null;
-    }
 
 
-    private Case[][] readFileSubPlateau(String fileName) throws IOException {
+
+    private static Case[][] readFileSubPlateau(String fileName) throws IOException {
         Case[][] subPlateau = new Case[9][9];
 
         InputStream inputStream = Plateau.class.getResourceAsStream("/" + fileName);
-        InputStreamReader inputStreamReader = new InputStreamReader(inputStream); // reads the file with the subPlateau
+        InputStreamReader inputStreamReader = new InputStreamReader(inputStream);
         BufferedReader bufferReader = new BufferedReader(inputStreamReader);
 
-        String line = null;
-        int i = 0; // i is the line in tableau
-        while ((line = bufferReader.readLine()) != null) { // until it reaches the end of the file
-            String[] charactersInLine = line.split("(?!^)"); // charactersInLine contains the characters of each line by
-            // line
+        String line;
+        int i = 0;
+        while ((line = bufferReader.readLine()) != null) {
+            String[] charactersInLine = line.split("(?!^)");
+
             for (int j = 0; j < charactersInLine.length; j++) {
                 PlateauUtil.parsePlaneCharacters(subPlateau, i, charactersInLine, j);
             }
-            i++; // the file reader switch to the next line, so we increase i to change row in
-            // plateau
+            i++;
         }
         inputStreamReader.close();
         return subPlateau;
     }
 
+
+
+
     public Case[][] constructPlateau() throws IOException, NoSuchAlgorithmException {
-
-
         Random rand = SecureRandom.getInstanceStrong();
         int randomNumber;
         ArrayList<String> subPlateauFiles = new ArrayList<>(Arrays.asList(
                 propertiesConfig.getProperty(FILE_PLATEAU_1),
                 propertiesConfig.getProperty(FILE_PLATEAU_2),
                 propertiesConfig.getProperty(FILE_PLATEAU_3),
-                propertiesConfig.getProperty(FILE_PLATEAU_4))); // list of
-        // subPlateau
-        // files
-        randomNumber = rand.nextInt(subPlateauFiles.size());
-        Case[][] subPlateauTopLeft = this.readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.get(randomNumber));
-        subPlateauFiles.remove(randomNumber); // remove the file that was used to create subPlateauTopLeft from the list
-        // of files
-        randomNumber = rand.nextInt(subPlateauFiles.size());
-        Case[][] subPlateauTopRightTemp = this.readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.get(randomNumber)); // subPlateau
-        // before
-        // rotation
-        Case[][] subPlateauTopRight = new Case[9][9]; // subPlateau that will contain the subPlateau once its rotated
-        subPlateauFiles.remove(randomNumber);
-        randomNumber = rand.nextInt(subPlateauFiles.size());
-        Case[][] subPlateauBottomLeftTemp = this.readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.get(randomNumber));
+                propertiesConfig.getProperty(FILE_PLATEAU_4)));
+
+        Case[][] subPlateauTopRight = new Case[9][9];
         Case[][] subPlateauBottomLeft = new Case[9][9];
-        subPlateauFiles.remove(randomNumber);
-        randomNumber = rand.nextInt(subPlateauFiles.size());
-        Case[][] subPlateauBottomRightTemp = this.readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.get(randomNumber));
         Case[][] subPlateauBottomRight = new Case[9][9];
-        subPlateauFiles.remove(randomNumber);
 
+        randomNumber = rand.nextInt(subPlateauFiles.size());
+        Case[][] subPlateauTopLeft = this.readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.remove(randomNumber));
+
+        randomNumber = rand.nextInt(subPlateauFiles.size());
+        Case[][] subPlateauTopRightTemp = this.readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.remove(randomNumber));
+
+
+        randomNumber = rand.nextInt(subPlateauFiles.size());
+        Case[][] subPlateauBottomLeftTemp = this.readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.remove(randomNumber));
+
+
+        randomNumber = rand.nextInt(subPlateauFiles.size());
+        Case[][] subPlateauBottomRightTemp = this.readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.remove(randomNumber));
+
+        finalSubPlateauRotated(subPlateauTopRight, subPlateauBottomLeft, subPlateauBottomRight, subPlateauTopRightTemp, subPlateauBottomLeftTemp, subPlateauBottomRightTemp);
+        return concatenateSubPlateau(subPlateauTopLeft, subPlateauTopRight, subPlateauBottomLeft, subPlateauBottomRight);
+    }
+
+
+
+    private void finalSubPlateauRotated(Case[][] subPlateauTopRight, Case[][] subPlateauBottomLeft, Case[][] subPlateauBottomRight, Case[][] subPlateauTopRightTemp, Case[][] subPlateauBottomLeftTemp, Case[][] subPlateauBottomRightTemp) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                subPlateauTopRight[i][j] = subPlateauTopRightTemp[i][8 - j];// rotate the top right subPlateau by 90°
-                // to the right
-                //the switch is used for switching the slash by
-                //an anti-slash only with the rotation of 90°
-                PlateauUtil.subPlateauRotation(subPlateauTopRight, subPlateauBottomLeftTemp, subPlateauBottomLeft, i, j);
-
-            }
-        }
-        // rotate the bottom right
-        // subPlateau by 180°
-        // no need to switch the slash by an
-        // anti-slash because it's a 180° rotation
-
-        for (int i = 0; i < 9; i++) {
-            for (int j = 0; j < 9; j++) {
+                subPlateauTopRight[i][j] = subPlateauTopRightTemp[i][(8 - j)];
+                subPlateauBottomLeft[i][j] = subPlateauBottomLeftTemp[8 - i][j];
                 subPlateauBottomRight[i][j] = subPlateauBottomRightTemp[8 - i][8 - j];
+                PlateauUtil.subPlateauRotation(subPlateauTopRight, i, j);
+                PlateauUtil.subPlateauRotation(subPlateauBottomLeft, i, j);
+                PlateauUtil.subPlateauRotation(subPlateauBottomRight, i, j);
             }
         }
+    }
 
-
+    private Case[][] concatenateSubPlateau(Case[][] subPlateauTopLeft, Case[][] subPlateauTopRight, Case[][] subPlateauBottomLeft, Case[][] subPlateauBottomRight) {
         Case[][] concatenationOfAllSubPlateau = new Case[18][18];
-
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                concatenationOfAllSubPlateau[i][j] = subPlateauTopLeft[i][j]; // place the subPlateau in the correct
-                // place in the plateau
-                concatenationOfAllSubPlateau[i][j + 9] = subPlateauTopRight[i][j];
-                concatenationOfAllSubPlateau[i + 9][j] = subPlateauBottomLeft[i][j];
-                concatenationOfAllSubPlateau[i + 9][j + 9] = subPlateauBottomRight[i][j];
+                concatenationOfAllSubPlateau[i][j] = subPlateauTopLeft[i][j];
+                concatenationOfAllSubPlateau[i][j+9] = subPlateauTopRight[i][j];
+                concatenationOfAllSubPlateau[i+9][j] = subPlateauBottomLeft[i][j];
+                concatenationOfAllSubPlateau[i+9][j+9] = subPlateauBottomRight[i][j];
             }
         }
 
@@ -197,7 +185,6 @@ public class Plateau {
             logger.info("Plateau final : ");
             this.printPlateau(concatenationOfAllSubPlateau);
         }
-
         return concatenationOfAllSubPlateau;
     }
 
