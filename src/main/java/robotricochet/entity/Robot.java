@@ -83,7 +83,7 @@ public class Robot {
 
             List<Position> possibleMoves = getPossibleMoves();
             for (Position nextMove : possibleMoves) {
-                tentativeGscore = current2startCost.getOrDefault(current, Integer.MAX_VALUE) + 1;
+                tentativeGscore = current2startCost.getOrDefault(current, Integer.MAX_VALUE) + countDistance(nextMove,current);
                 if (tentativeGscore < current2startCost.getOrDefault(nextMove, Integer.MAX_VALUE)) {
                     cameFrom.put(nextMove, current);
                     cheapestCost.put(nextMove, tentativeGscore + countDistance(nextMove, targetPosition));

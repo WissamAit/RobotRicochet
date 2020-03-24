@@ -27,6 +27,7 @@ public class GameBuilder {
     public Plateau getPlateau() {
         return plateau;
     }
+    public  RobotBuilder getRobotBuilder(){return robotBuilder;}
 
     public void initGame() {
         if (DEBUG) {

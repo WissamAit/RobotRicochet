@@ -18,7 +18,9 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
-import java.io.*;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 public class TestMain extends Application {
@@ -125,7 +127,6 @@ public class TestMain extends Application {
         playButton.setOnAction(new EventHandler<ActionEvent>() {
 
             public void handle(ActionEvent event) {
-                // TODO : play game
                 try {
                     GridBuilder.showDialog();
                 } catch (IOException | NoSuchAlgorithmException e) {
@@ -137,13 +138,13 @@ public class TestMain extends Application {
     }
 
     private Button rulesButtonCreation(Shadow shadow) {
-    	Button rulesButton = new Button("Rules");
+        Button rulesButton = new Button("Rules");
         rulesButton.setLayoutX(720);
         rulesButton.setLayoutY(480);
         rulesButton.setFont(Font.font("verdana", FontWeight.BOLD, FontPosture.REGULAR, 15));
         rulesButton.setStyle("-fx-background-color: transparent; -fx-text-fill: yellow;");
         rulesButton.setOnAction(new EventHandler<ActionEvent>() {
-        	public void handle(ActionEvent event) {
+            public void handle(ActionEvent event) {
                 try {
                     RulesBuilder.showRules();
                 } catch (IOException e) {

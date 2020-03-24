@@ -1,16 +1,18 @@
 package robotricochet.graphics;
 
 import javafx.scene.Scene;
+import javafx.scene.effect.Shadow;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
-import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import robotricochet.services.GameBuilder;
 
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
+
+import static javafx.scene.paint.Color.SANDYBROWN;
 
 public class GridBuilder {
 
@@ -20,11 +22,12 @@ public class GridBuilder {
         primaryStage.setTitle("Ricochet robot solver");
         GridPane gridPane = new GridPane();
         GameBuilder game = new GameBuilder();
-        game.initGame();
+        GameGraphic gameGraphic = new GameGraphic();
         Image image = null;
         ImageView imageview = null;
         gridPane.setHgap(2);
         gridPane.setVgap(2);
+        Shadow shadow = new Shadow();
         for (int i = 0; i < game.getPlateau().getPlateau().length; i++) {
             for (int j = 0; j < game.getPlateau().getPlateau().length; j++) {
                 switch (game.getPlateau().getPlateau()[i][j].getCaseType()) {
@@ -331,10 +334,18 @@ public class GridBuilder {
 
                 }
             }
+            GameGraphic.placeRobotButton(gridPane, game, shadow);
+            gameGraphic.selectedTargetButton(gridPane,game,shadow);
+            gameGraphic.playButton(gridPane,game,shadow);
         }
-        Scene scene = new Scene(gridPane, 900, 640, Color.SANDYBROWN);
+
+
+        gridPane.setStyle("-fx-background-color:#582900;");
+        Scene scene = new Scene(gridPane, 900, 640);
         primaryStage.setScene(scene);
         primaryStage.show();
 
     }
+
+
 }
