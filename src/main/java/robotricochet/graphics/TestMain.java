@@ -32,6 +32,7 @@ public class TestMain extends Application {
     @Override
     public void start(Stage primaryStage) throws NullPointerException {
         primaryStage.setTitle("RicochetRobot Game");
+        primaryStage.setResizable(false);
         Group root = new Group();
         Scene scene = new Scene(root, 900, 660);
         Shadow shadow = new Shadow();
@@ -40,10 +41,12 @@ public class TestMain extends Application {
     }
 
     private void firstWindowView(Stage primaryStage, Group root, Scene scene, Shadow shadow) {
+        primaryStage.setResizable(false);
         ImageView backGroundImage = null;
         try {
             backGroundImage = new ImageView(
                     new Image(new FileInputStream("src/main/resources/images/ricochet-robots-board.jpg")));
+            primaryStage.getIcons().add(new Image ( new FileInputStream("src/main/resources/images/icon.jpg")));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }

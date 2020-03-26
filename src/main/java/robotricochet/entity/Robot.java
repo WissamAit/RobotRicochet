@@ -1,7 +1,6 @@
 package robotricochet.entity;
 
 import robotricochet.services.Plateau;
-import robotricochet.services.RobotBuilder;
 import robotricochet.utils.MoveUtil;
 
 import java.util.*;
@@ -17,7 +16,7 @@ public class Robot {
     private Color color;
     private Position position;
     private Map<Position, Position> cameFrom = new HashMap<>();
-    private Map<Position, Integer> current2startCost = new HashMap<>();//gScore
+    private Map<Position, Integer> currentTostartCost = new HashMap<>();//gScore
     private Map<Position, Integer> cheapestCost = new HashMap<>();//fScore
     private Plateau plateau;
 
@@ -68,13 +67,13 @@ public class Robot {
         openQueuePositions.add(startPosition);
         openSetPositions.add(startPosition);
 
-        current2startCost.put(startPosition, 0);
+        currentTostartCost.put(startPosition, 0);
         cheapestCost.put(startPosition, countDistance(startPosition, targetPosition));
 
         while (!openQueuePositions.isEmpty()) {
             final Position current = openQueuePositions.poll();
             openSetPositions.remove(current);
-            current2startCost.put(current, countDistance(startPosition, current));
+            currentTostartCost.put(current, countDistance(startPosition, current));
 
             List<Position> finalSmallestPath = finalPositionIsReached(robot, targetPosition, current);
             if (!finalSmallestPath.isEmpty()) return finalSmallestPath;
@@ -83,8 +82,8 @@ public class Robot {
 
             List<Position> possibleMoves = getPossibleMoves();
             for (Position nextMove : possibleMoves) {
-                tentativeGscore = current2startCost.getOrDefault(current, Integer.MAX_VALUE) + countDistance(nextMove,current);
-                if (tentativeGscore < current2startCost.getOrDefault(nextMove, Integer.MAX_VALUE)) {
+                tentativeGscore = currentTostartCost.getOrDefault(current, Integer.MAX_VALUE) + countDistance(nextMove,current);
+                if (tentativeGscore < currentTostartCost.getOrDefault(nextMove, Integer.MAX_VALUE)) {
                     cameFrom.put(nextMove, current);
                     cheapestCost.put(nextMove, tentativeGscore + countDistance(nextMove, targetPosition));
                     if (!openSetPositions.contains(nextMove)) {

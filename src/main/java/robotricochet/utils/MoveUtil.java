@@ -88,13 +88,11 @@ public class MoveUtil {
         return ghostRobotPosition;
     }
 
-    //TODO: move to Plateau
     public static boolean isObstacle(Position position, Plateau plateau) {
         return (plateau.getPlateau()[position.getX()][position.getY()].getCaseType() == CaseType.OBSTACLE);
 
     }
 
-    //TODO/ move to Plateau
     public static boolean isRicochetForRobot(Color color, Position position, Plateau plateau) {
         CaseType caseType = plateau.getPlateau()[position.getX()][position.getY()].getCaseType();
         if (color == Color.BLUE && (caseType == CaseType.SLASH_BLUE || caseType == CaseType.ANTISLASH_BLUE)) {
@@ -112,7 +110,6 @@ public class MoveUtil {
         return false;
     }
 
-    //TODO move to Plateau
     public static boolean isSlash(Position position, Plateau plateau) {
         CaseType caseType = plateau.getPlateau()[position.getX()][position.getY()].getCaseType();
         return (caseType == CaseType.SLASH_BLUE

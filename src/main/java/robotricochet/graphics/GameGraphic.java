@@ -1,5 +1,6 @@
 package robotricochet.graphics;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Alert;
@@ -22,7 +23,11 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
+
+import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
 public class GameGraphic {
 
@@ -109,14 +114,14 @@ public class GameGraphic {
         });
         gridPane.add(play, 50, 9);
 
-       play.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<>() {
+        play.addEventHandler(MouseEvent.MOUSE_EXITED, new EventHandler<>() {
             @Override
             public void handle(MouseEvent e) {
                 play.setEffect(null);
             }
         })
         ;
-       play.setOnAction(new EventHandler<ActionEvent>() {
+        play.setOnAction(new EventHandler<ActionEvent>() {
             public void handle(ActionEvent event) {
                 try {
                     play(gridPane, drownToken, game);
@@ -199,7 +204,6 @@ public class GameGraphic {
         imageview.setFitHeight(32);
         imageview.setFitWidth(32);
         Image image2 = new Image(new FileInputStream(STR + robotImageString));
-        ImageView imageview2;
         Image img = new Image(new FileInputStream(STR + startingCase));
         ImageView iv = new ImageView(img);
         iv.setFitHeight(32);
@@ -207,13 +211,17 @@ public class GameGraphic {
         if (!shortestPath.isEmpty()) {
             gridPane.add(iv, shortestPath.get(0).getY(), shortestPath.get(0).getX());
             for (int i = 1; i < shortestPath.size(); i++) {
-                Position currentPosition = shortestPath.get(i);
-                imageview2 = new ImageView(image2);
-                imageview2.setFitHeight(32);
-                imageview2.setFitWidth(32);
-                Timer myTimer = new Timer();
-                gridPane.add(imageview2, currentPosition.getY(), currentPosition.getX());
-
+                Thread.sleep(1000);
+                ThreadFactory tFactory = r -> {
+                    Thread t = new Thread(r);
+                    t.setDaemon(true);
+                    return t;
+                };
+                ScheduledExecutorService service = newSingleThreadScheduledExecutor(tFactory);
+                int finalI = i;
+                service.scheduleWithFixedDelay(() -> {
+                    Platform.runLater(() -> moveRobot(gridPane, shortestPath, image2, finalI));
+                }, 12, 2, TimeUnit.SECONDS);
 
             }
         } else {
@@ -224,6 +232,15 @@ public class GameGraphic {
             alert.setContentText(s);
             alert.show();
         }
+    }
+
+    private static synchronized void moveRobot(GridPane gridPane, List<Position> shortestPath, Image image2, int i) {
+        ImageView imageview2;
+        Position currentPosition = shortestPath.get(i);
+        imageview2 = new ImageView(image2);
+        imageview2.setFitHeight(32);
+        imageview2.setFitWidth(32);
+        gridPane.add(imageview2, currentPosition.getY(), currentPosition.getX());
     }
 
 
