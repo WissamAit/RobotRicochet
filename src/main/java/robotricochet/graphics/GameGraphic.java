@@ -29,10 +29,22 @@ import java.util.concurrent.TimeUnit;
 
 import static java.util.concurrent.Executors.newSingleThreadScheduledExecutor;
 
+/**
+ * contains methods to run the graphic game ,buttons ,options ...
+ */
 public class GameGraphic {
 
     CaseType drownToken = Token.getTokenCaseType();
+    /**
+     * JavaFx GridPane is a layout component which lays out its child components in a grid
+     */
 
+    /**
+     * this methode creates a Button to place robots and add it into the gridPane
+     * @param gridPane the graphic grid game
+     * @param game a GameBuilder Object
+     * @param shadow apply shadow to the boutton
+     */
     public static void placeRobotButton(GridPane gridPane, GameBuilder game, Shadow shadow) {
         Button placeRobot = new Button("Place Robots");
         placeRobot.setLayoutX(100);
@@ -67,6 +79,12 @@ public class GameGraphic {
         });
     }
 
+    /**
+     * this methode creates a Button to select a target and add it into the gridPane
+     * @param gridPane the graphic grid game
+     * @param game a GameBuilder Object
+     * @param shadow apply shadow to the boutton
+     */
 
     public void selectedTargetButton(GridPane gridPane, GameBuilder game, Shadow shadow) {
         Button target = new Button("Select a target");
@@ -98,6 +116,13 @@ public class GameGraphic {
         });
     }
 
+
+    /**
+     * this methode creates a Button to start the game and add it into the gridPane
+     * @param gridPane the graphic grid game
+     * @param game a GameBuilder Object
+     * @param shadow apply shadow to the boutton
+     */
     public void playButton(GridPane gridPane, GameBuilder game, Shadow shadow) {
         Button play = new Button("play");
         play.setLayoutX(100);
@@ -125,12 +150,21 @@ public class GameGraphic {
             public void handle(ActionEvent event) {
                 try {
                     play(gridPane, drownToken, game);
-                } catch (FileNotFoundException | InterruptedException e) {
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
             }
         });
     }
+
+    /**
+     * this methode puts robots on their place
+     * @param pane the graphic grid game
+     * @param game a GameBuilder object
+     * @throws FileNotFoundException while loading the images
+     */
 
     public static void putRobots(GridPane pane, GameBuilder game) throws FileNotFoundException {
         Image image = null;
@@ -147,7 +181,7 @@ public class GameGraphic {
                         break;
 
                     case RED_ROBOT_START:
-                        image = new Image(new FileInputStream("src/main/resources/images/RED_ROBOT.JPG"));
+                        image = new Image(new FileInputStream("src/main/resources/images/RED_ROBOT.jpg"));
                         imageview = new ImageView(image);
                         imageview.setFitHeight(33);
                         imageview.setFitWidth(33);
@@ -182,15 +216,28 @@ public class GameGraphic {
 
     }
 
-
+    /**
+     * this methode marks the selected target on the grid
+     * @param game a GameBuilder Object
+     * @param drownToken target
+     * @param gridPane graphic grid game
+     */
     public static void selectedTarget(GameBuilder game, CaseType drownToken, GridPane gridPane) {
         Position position = game.getPlateau().searchPositionOf(drownToken);
         Rectangle rectangle = new Rectangle(33, 33);
-        rectangle.setStroke(Color.PURPLE);
+        rectangle.setStroke(Color.LIGHTSTEELBLUE);
         rectangle.setFill(Color.rgb(255, 0, 255, 0.4));
         gridPane.add(rectangle, position.getY(), position.getX());
     }
 
+    /**
+     * play graphically methode
+     * @param gridPane graphic grid game
+     * @param drownToken target
+     * @param game Gamebuilder Object
+     * @throws FileNotFoundException can be while loading the robot image file
+     * @throws InterruptedException can be thrown by the timer
+     */
 
     public static void play(GridPane gridPane, CaseType drownToken, GameBuilder game) throws FileNotFoundException, InterruptedException {
         Robot currentRobot = game.currentRobot(drownToken);
@@ -208,32 +255,50 @@ public class GameGraphic {
         ImageView iv = new ImageView(img);
         iv.setFitHeight(32);
         iv.setFitWidth(32);
+        ScheduledExecutorService service = null;
+        int nbrCost=0;
         if (!shortestPath.isEmpty()) {
             gridPane.add(iv, shortestPath.get(0).getY(), shortestPath.get(0).getX());
             for (int i = 1; i < shortestPath.size(); i++) {
+                nbrCost ++;
                 Thread.sleep(1000);
                 ThreadFactory tFactory = r -> {
                     Thread t = new Thread(r);
                     t.setDaemon(true);
-                    return t;
-                };
-                ScheduledExecutorService service = newSingleThreadScheduledExecutor(tFactory);
+                    return t; };
+                service= newSingleThreadScheduledExecutor(tFactory);
+
                 int finalI = i;
-                service.scheduleWithFixedDelay(() -> {
+                service.scheduleAtFixedRate(() -> {
                     Platform.runLater(() -> moveRobot(gridPane, shortestPath, image2, finalI));
                 }, 12, 2, TimeUnit.SECONDS);
 
+
             }
-        } else {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("You won");
+            alert.setHeaderText("End of the round !");
+            String s = "Congratulation the target has been reached,with "+nbrCost+" moves done";
+            alert.setContentText(s);
+            alert.show();
+
+        } else {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Information");
             alert.setHeaderText("Is there any path to reach the selected target?");
-            String s = "Sorry :) No path found, please exit and restart the game ";
+            String s = "Sorry !No path exists, please exit or restart the game ";
             alert.setContentText(s);
             alert.show();
         }
     }
 
+    /**
+     * this methode moves robots graphically
+     * @param gridPane the graphic grid game
+     * @param shortestPath list of positions
+     * @param image2 robot image
+     * @param i indice to access the list of positions
+     */
     private static synchronized void moveRobot(GridPane gridPane, List<Position> shortestPath, Image image2, int i) {
         ImageView imageview2;
         Position currentPosition = shortestPath.get(i);
@@ -241,15 +306,20 @@ public class GameGraphic {
         imageview2.setFitHeight(32);
         imageview2.setFitWidth(32);
         gridPane.add(imageview2, currentPosition.getY(), currentPosition.getX());
+
     }
 
+    /**
+     *load the respective path of images of the robots and it's own starting case
+     * @param robot current robot
+     * @return a list of current robot Image and current robot start image
+     */
 
     private static List<String> robotColorImages(Robot robot) {
         List<String> arrayOfImages = new ArrayList<>();
         robotricochet.entity.Color robotColor = robot.getColor();
         switch (robotColor) {
             case RED:
-
                 arrayOfImages.add("RED_ROBOT.jpg");
                 arrayOfImages.add("REDROBOTSTART.jpg");
                 break;

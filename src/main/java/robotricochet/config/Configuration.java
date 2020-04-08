@@ -9,6 +9,11 @@ public class Configuration {
 
     private static Logger LOGGER = Logger.getAnonymousLogger();
 
+    /**
+     * get files values from application.properties
+     * @return property
+     */
+
     public static Properties fetchProperties() {
 
         Properties prop = new Properties();

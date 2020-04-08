@@ -6,37 +6,62 @@ import robotricochet.entity.Robot;
 import robotricochet.entity.Token;
 
 import java.io.IOException;
-import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.logging.Logger;
 
+/**
+ * allow us to launch the construction of the grid game ,initialise the tokens
+ */
 public class GameBuilder {
     private static Logger logger = Logger.getAnonymousLogger();
     private static final boolean DEBUG = true;
     private Plateau plateau;
     private RobotBuilder robotBuilder;
 
-    public GameBuilder() throws IOException, NoSuchAlgorithmException {
+    /**GameBuilder
+     * constructor of Gamebuilder
+     * @throws IOException thrown by the instancition of Objectc plateau
+     */
+    public GameBuilder() throws IOException {
         this.plateau = new Plateau();
         this.robotBuilder = new RobotBuilder();
         this.initGame();
     }
 
+    /**getPlateau
+     * getter of the Plateau
+     * @return Plateau of the current game
+     */
     public Plateau getPlateau() {
         return plateau;
     }
-    public  RobotBuilder getRobotBuilder(){return robotBuilder;}
 
+    /**getRobotBuilder
+     * getter of the RobotBuilder class
+     * @return a object type RobotBuilder
+     */
+    public RobotBuilder getRobotBuilder() {
+        return this.robotBuilder;
+    }
+
+    /**initGame
+     * initialize the game by placing the robots on their starting cases
+     */
     public void initGame() {
         if (DEBUG) {
             Token.printTokensContent();
             this.plateau.printPlateau();
-            this.robotBuilder.placeRobotOnStartingCases(this.plateau.getPlateau());
         }
+        this.robotBuilder.placeRobotOnStartingCases(this.plateau.getPlateau());
     }
 
+    /**
+     * currentRobot
+     * @param  token the  current drown token
+     * @return a robot according to the given token
+     */
     public Robot currentRobot(CaseType token) {
 
         if (Token.redTokensList().contains(token)) {
@@ -64,6 +89,9 @@ public class GameBuilder {
         return null;
     }
 
+    /**
+     * play non-graphic method to play the game
+     */
     public void play() {
 
         logger.info("start of game ");
@@ -80,6 +108,5 @@ public class GameBuilder {
 
         logger.info("end of game ");
     }
-
 
 }

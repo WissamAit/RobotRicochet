@@ -5,9 +5,9 @@ import robotricochet.entity.Color;
 import robotricochet.entity.Position;
 import robotricochet.entity.Robot;
 
-import java.util.HashMap;
-import java.util.Map;
-
+/**
+ * create the robots ,and contains all necessary methods to use them
+ */
 public class RobotBuilder {
 
 
@@ -16,7 +16,9 @@ public class RobotBuilder {
     private Robot blueRobot;
     private Robot yellowRobot;
 
-
+    /**
+     * constructor of the class ,initialise robots at position=(1,1)
+     */
     public RobotBuilder() {
         this.greenRobot = new Robot(Color.GREEN, new Position(1, 1));
         this.redRobot = new Robot(Color.RED, new Position(1, 1));
@@ -25,6 +27,10 @@ public class RobotBuilder {
 
     }
 
+    /**
+     *place all the robots on their own starting case
+     * @param grid the current grid of the game
+     */
     public void placeRobotOnStartingCases(Case[][] grid) {
         for (int i = 0; i < 18; i++) {
             for (int j = 0; j < 18; j++) {
@@ -48,19 +54,31 @@ public class RobotBuilder {
         }
     }
 
-
+    /**
+     * getter of the blue robot
+     * @return the blue robot
+     */
     public Robot getBlueRobot() {
         return blueRobot;
     }
-
+    /**
+     * getter of the green robot
+     * @return the green robot
+     */
     public Robot getGreenRobot() {
         return greenRobot;
     }
-
+    /**
+     * getter of the red robot
+     * @return the red robot
+     */
     public Robot getRedRobot() {
         return redRobot;
     }
-
+    /**
+     * getter of the green robot
+     * @return the green robot
+     */
     public Robot getYellowRobot() {
         return yellowRobot;
     }

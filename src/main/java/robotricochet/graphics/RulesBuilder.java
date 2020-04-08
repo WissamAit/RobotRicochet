@@ -1,37 +1,46 @@
 package robotricochet.graphics;
 
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.paint.Color;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 
-import java.io.BufferedReader;
 import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.FileNotFoundException;
 
+/**
+ * launch the rules of the game while choosing Rules Button in the principale menu
+ */
 public class RulesBuilder {
 
-
-    public static void showRules() throws IOException {
+    /**
+     * this methode builds the window that must be displayed when we press the rules button
+     */
+    public static void showRules() {
         Stage primaryStage = new Stage();
         primaryStage.setResizable(false);
-        primaryStage.setTitle("Ricochet robot solver rules");
-        InputStreamReader inputStreamReader = new InputStreamReader(new FileInputStream("src/main/resources/rules.txt"));
-        BufferedReader bufferReader = new BufferedReader(inputStreamReader);
-        String line;
-        String str = "";
-        while ((line = bufferReader.readLine()) != null) {
-            str = str + line + "\n";
+        primaryStage.setTitle("Gaming Rules");
+        Group root = new Group();
+        Scene scene = new Scene(root, 638, 570);
+        primaryStage.setResizable(false);
+        ImageView rulesImage = null;
+        try {
+            rulesImage = new ImageView(
+                    new Image(new FileInputStream("src/main/resources/images/RULES.jpg")));
+            primaryStage.getIcons().add(new Image(new FileInputStream("src/main/resources/images/icong.jpg")));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
         }
-
-        ScrollPane scrollPane = new ScrollPane();
-        scrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        Label label = new Label(str);
-        scrollPane.setContent(label);
-        Scene scene = new Scene(scrollPane, 900, 660, Color.SANDYBROWN);
+        rulesImage.setFitHeight(600);
+        rulesImage.setFitWidth(660);
+        rulesImage.setPreserveRatio(true);
+        root.getChildren().add(rulesImage);
         primaryStage.setScene(scene);
+        primaryStage.setResizable(false);
         primaryStage.show();
     }
 }
+
+
+

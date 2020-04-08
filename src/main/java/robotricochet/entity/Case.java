@@ -2,25 +2,37 @@ package robotricochet.entity;
 
 
 /**
- * Case
+ *the class Case is used to define the content of a case
  */
 public class Case {
 
 
     CaseType caseType;
 
+    /**
+     * class constructor
+     * @param caseType type of case
+     */
 
     public Case(CaseType caseType) {
 
         this.caseType = caseType;
     }
 
+    /**
+     * getter of caseType
+     * @return type of case
+     */
     public CaseType getCaseType() {
 
         return this.caseType;
     }
 
-    public String toString() { // gives the correct character depending of the Type of the Case
+    /**
+     * gives the correct character depending of the Type of the Case
+     * @return character of case
+     */
+    public String toString() {
         String string = null;
         switch (this.caseType) {
             case OBSTACLE:

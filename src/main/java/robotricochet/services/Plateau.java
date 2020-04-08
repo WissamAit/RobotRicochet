@@ -2,18 +2,24 @@
 package robotricochet.services;
 
 import robotricochet.config.PropertiesSingleton;
-import robotricochet.entity.*;
+import robotricochet.entity.Case;
+import robotricochet.entity.CaseType;
+import robotricochet.entity.Position;
 import robotricochet.utils.PlateauUtil;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.security.NoSuchAlgorithmException;
-import java.security.SecureRandom;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Properties;
+import java.util.Random;
 import java.util.logging.Logger;
 
+/**
+ * allowing us the full construction of the grid game
+ */
 public class Plateau {
     private static Logger logger = Logger.getAnonymousLogger();
     private static final String SUB_PLATEAU = "subPlateau/";
@@ -25,12 +31,19 @@ public class Plateau {
     private Properties propertiesConfig = PropertiesSingleton.getInstance();
     private Case[][] grid;
 
-
-    public Plateau() throws IOException, NoSuchAlgorithmException {
+    /**
+     *constructor of the class
+     * @throws IOException thrown by the method constructPlateau
+     */
+    public Plateau() throws IOException {
         this.grid = this.constructPlateau();
     }
 
-
+    /**
+     * searchPositionOf
+     * @param caseType the type of the case researched
+     * @return the position of the caseType given
+     */
     public Position searchPositionOf(CaseType caseType) {
         for (int i = 0; i < grid[0].length; i++) {
             for (int j = 0; j < grid.length; j++) {
@@ -42,11 +55,18 @@ public class Plateau {
         return null;
     }
 
+    /**
+     * getter of the grid
+     * @return the grid game
+     */
     public Case[][] getPlateau() {
         return grid;
     }
 
-
+    /**
+     * printPltaeau print the grid
+     * @param plateau game grid
+     */
     public void printPlateau(Case[][] plateau) {
         int i = 0;
         while (i < plateau.length) {
@@ -58,12 +78,20 @@ public class Plateau {
         }
     }
 
-
+    /**
+     * printPlateau
+     * print the grid without any parametre
+     */
     public void printPlateau() {
         printPlateau(this.grid);
     }
 
-
+    /**
+     *  take a path file name and convert all the characters to an element of SaseType enum
+     * @param fileName the path of the subPlateau
+     * @return a 2D array with a shape of (9,9)
+     * @throws IOException thrown while reading the file
+     */
     private static Case[][] readFileSubPlateau(String fileName) throws IOException {
         Case[][] subPlateau = new Case[9][9];
 
@@ -85,8 +113,13 @@ public class Plateau {
         return subPlateau;
     }
 
-    public Case[][] constructPlateau() throws IOException, NoSuchAlgorithmException {
-        Random rand = SecureRandom.getInstanceStrong();
+    /**
+     * calls all the methods of the class to create the game plateau
+     * @return the grid game
+     * @throws IOException can be thrown while reading the file
+     */
+    public Case[][] constructPlateau() throws IOException {
+        Random rand = new Random();
         int randomNumber;
         ArrayList<String> subPlateauFiles = new ArrayList<>(Arrays.asList(
                 propertiesConfig.getProperty(FILE_PLATEAU_1),
@@ -99,23 +132,32 @@ public class Plateau {
         Case[][] subPlateauBottomRight = new Case[9][9];
 
         randomNumber = rand.nextInt(subPlateauFiles.size());
-        Case[][] subPlateauTopLeft = this.readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.remove(randomNumber));
+        Case[][] subPlateauTopLeft = readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.remove(randomNumber));
 
         randomNumber = rand.nextInt(subPlateauFiles.size());
-        Case[][] subPlateauTopRightTemp = this.readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.remove(randomNumber));
-
-
-        randomNumber = rand.nextInt(subPlateauFiles.size());
-        Case[][] subPlateauBottomLeftTemp = this.readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.remove(randomNumber));
+        Case[][] subPlateauTopRightTemp = readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.remove(randomNumber));
 
 
         randomNumber = rand.nextInt(subPlateauFiles.size());
-        Case[][] subPlateauBottomRightTemp = this.readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.remove(randomNumber));
+        Case[][] subPlateauBottomLeftTemp = readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.remove(randomNumber));
+
+
+        randomNumber = rand.nextInt(subPlateauFiles.size());
+        Case[][] subPlateauBottomRightTemp = readFileSubPlateau(SUB_PLATEAU + subPlateauFiles.remove(randomNumber));
 
         finalSubPlateauRotated(subPlateauTopRight, subPlateauBottomLeft, subPlateauBottomRight, subPlateauTopRightTemp, subPlateauBottomLeftTemp, subPlateauBottomRightTemp);
         return concatenateSubPlateau(subPlateauTopLeft, subPlateauTopRight, subPlateauBottomLeft, subPlateauBottomRight);
     }
 
+    /**
+     * do the rotation of the subPlateau(subGrids),rotate the ricochet of the top right sub grid,and bottom left one
+     * @param subPlateauTopRight
+     * @param subPlateauBottomLeft
+     * @param subPlateauBottomRight
+     * @param subPlateauTopRightTemp temporary subPlateau
+     * @param subPlateauBottomLeftTemp temporary subPlateau
+     * @param subPlateauBottomRightTemp temporary subPlateau
+     */
     private void finalSubPlateauRotated(Case[][] subPlateauTopRight, Case[][] subPlateauBottomLeft, Case[][] subPlateauBottomRight, Case[][] subPlateauTopRightTemp, Case[][] subPlateauBottomLeftTemp, Case[][] subPlateauBottomRightTemp) {
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
@@ -124,11 +166,18 @@ public class Plateau {
                 subPlateauBottomRight[i][j] = subPlateauBottomRightTemp[8 - i][8 - j];
                 PlateauUtil.subPlateauRotation(subPlateauTopRight, i, j);
                 PlateauUtil.subPlateauRotation(subPlateauBottomLeft, i, j);
-                PlateauUtil.subPlateauRotation(subPlateauBottomRight, i, j);
             }
         }
     }
 
+    /**
+     * concatenate all the 4 subGrids to form one
+     * @param subPlateauTopLeft
+     * @param subPlateauTopRight
+     * @param subPlateauBottomLeft
+     * @param subPlateauBottomRight
+     * @return the final form of the grid game
+     */
     private Case[][] concatenateSubPlateau(Case[][] subPlateauTopLeft, Case[][] subPlateauTopRight, Case[][] subPlateauBottomLeft, Case[][] subPlateauBottomRight) {
         Case[][] concatenationOfAllSubPlateau = new Case[18][18];
         for (int i = 0; i < 9; i++) {

@@ -6,7 +6,9 @@ import java.util.Properties;
 
 public class ConfigurationTest {
 
-
+    /**
+     * tests if fetchProperties returns the right values
+     */
 
     @Test
     public void shouldReturnValuesAppPropFiles() {

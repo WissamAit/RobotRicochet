@@ -1,5 +1,8 @@
 package robotricochet.entity;
 
+/**
+ * enum representing Type of case
+ */
 public enum CaseType {
     OBSTACLE, //#
     EMPTYSPACE, //' '

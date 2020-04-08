@@ -6,12 +6,23 @@ import robotricochet.entity.CaseType;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * contains 3 methods that would be used in Plateau class
+ */
 public class PlateauUtil {
-
+    /**
+     * constructor of the class
+     */
     private PlateauUtil() {
-
     }
 
+    /**
+     * convert the current symbole of the line by its caseType ,caseType that would be loaded to the subPlateau
+     * @param subPlateau the sub grid
+     * @param x the number of the row
+     * @param charactersInLine a array of String that represents the elements of the file
+     * @param y the number of the column
+     */
     public static void parsePlaneCharacters(Case[][] subPlateau, int x, String[] charactersInLine, int y) {
 
         Map<String, Case> casesMap = loadTypeCases();
@@ -19,6 +30,10 @@ public class PlateauUtil {
 
     }
 
+    /**
+     * loadTypeCases
+     * @return a Map with the symbole on the file.txt as a key and his caseType as a value
+     */
     private static Map<String, Case> loadTypeCases() {
         Map<String, Case> casesMap = new HashMap<>();
 
@@ -56,22 +71,12 @@ public class PlateauUtil {
         return casesMap;
     }
 
-    public static Map<String,Case> oppositeRicochetMap(){
-        Map<String,Case> casesMap = new HashMap<>();
-
-        casesMap.put("I", new Case(CaseType.ANTISLASH_RED));
-        casesMap.put("H", new Case(CaseType.SLASH_RED));
-        casesMap.put("K", new Case(CaseType.ANTISLASH_GREEN));
-        casesMap.put("J", new Case(CaseType.SLASH_GREEN));
-        casesMap.put("M", new Case(CaseType.ANTISLASH_BLUE));
-        casesMap.put("L", new Case(CaseType.SLASH_BLUE));
-        casesMap.put("O", new Case(CaseType.ANTISLASH_YELLOW));
-        casesMap.put("N", new Case(CaseType.SLASH_YELLOW));
-
-        return casesMap;
-    }
-
-
+    /**
+     * rotate the ricochet by switching a slash ricochet / by an anti-slash one \
+     * @param subPlateau ricochets  that will be rotated
+     * @param x the number of the row
+     * @param y the number of the column
+     */
     public static void subPlateauRotation(Case[][] subPlateau, int x, int y) {
         switch (subPlateau[x][y].toString()) {
 
